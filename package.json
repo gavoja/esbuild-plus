@@ -1,0 +1,40 @@
+{
+  "name": "esbuild-plus",
+  "version": "0.1.0",
+  "description": "Minimal esbuild development envionment",
+  "keywords": [
+    "esbuild",
+    "development"
+  ],
+  "homepage": "https://github.com/gavoja/esbuild-plus#readme",
+  "bugs": {
+    "url": "https://github.com/gavoja/esbuild-plus/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gavoja/esbuild-plus.git"
+  },
+  "license": "MIT",
+  "author": "Michal Kochel",
+  "type": "module",
+  "main": "./tools/cli.js",
+  "scripts": {
+    "start": "node ./tools/cli.js --dev",
+    "build": "node ./tools/cli.js",
+    "lint": "npx eslint",
+    "format": "npx eslint --fix",
+    "release": "dotenv release-it",
+    "release:ci": "dotenv release-it --ci",
+    "release:dry": "dotenv release-it --dry-run"
+  },
+  "bin": {
+    "ebp": "./tools/cli.js"
+  },
+  "devDependencies": {
+    "dotenv": "^17.2.3",
+    "dotenv-cli": "^11.0.0",
+    "esbuild": "^0.27.1",
+    "eslint": "^9.39.2",
+    "neostandard": "^0.12.2"
+  }
+}
