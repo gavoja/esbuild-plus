@@ -28,7 +28,7 @@
     "release:dry": "dotenv release-it --dry-run"
   },
   "bin": {
-    "ebp": "./tools/cli.js"
+    "ebp": "tools/cli.js"
   },
   "devDependencies": {
     "dotenv": "^17.2.3",
