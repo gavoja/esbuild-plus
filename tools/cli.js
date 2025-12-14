@@ -5,6 +5,7 @@ import path from 'node:path'
 import http from 'node:http'
 import watch from './watch.js'
 
+const IS_DEV = process.argv.includes('--dev') || process.argv.includes('-d')
 const HOST = 'localhost'
 const PORT = 3000
 const BANNER = `
@@ -78,8 +79,6 @@ function svgImportPlugin () {
 }
 
 async function main () {
-  const isDev = process.argv.includes('--dev') || process.argv.includes('-d')
-
   // Resolve entry points.
   const entryPoints = Iterator.from(await fs.readdir('./src'))
     .filter(f => f.endsWith('.js') || f.endsWith('.ts') || f.endsWith('.jsx') || f.endsWith('.tsx'))
@@ -93,17 +92,20 @@ async function main () {
     plugins: [svgImportPlugin(), serverReloadPlugin()],
     format: 'esm',
     bundle: true,
-    minify: !isDev,
-    sourcemap: isDev ? 'inline' : false,
-    banner: { js: BANNER }
+    minify: false,
+    sourcemap: IS_DEV ? 'inline' : false,
+    banner: IS_DEV ? { js: BANNER } : undefined,
+    define: { IS_DEV: JSON.stringify(IS_DEV) }
   })
+
 
   // Clean up.
   await fs.rm('./target', { recursive: true, force: true })
   fs.cp('./static', './target', { recursive: true, force: true })
   console.log('[ebp] Static files copied.')
 
-  if (!isDev) {
+  // Production.
+  if (!IS_DEV) {
     await ctx.rebuild()
     await ctx.dispose()
     return
@@ -165,7 +167,7 @@ async function main () {
   })
 
   proxy.listen(PORT, HOST, () => {
-    console.log(`[ebp] Serving target at http://${HOST}:${PORT}.`)
+    console.log(`[ebp] Serving at http://${HOST}:${PORT}.`)
     console.log(`[ebp] Proxying to esbuild at http://${HOST}:${server.port}.`)
   })
 

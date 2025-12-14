@@ -1,1 +1,1 @@
-console.log('Hello from main.js.');
+console.log('Hello from main.js.', IS_DEV);
