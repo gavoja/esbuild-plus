@@ -4,7 +4,7 @@ Minimal zero-dependency esbuild development environment with live reload.
 
 ## Motivation
 
-I absolutely love esbuild. And I am tired having to set up it over and over again for every project.
+I absolutely love esbuild. And I am tired having to set it up over and over again for every project.
 
 ## Usage
 
