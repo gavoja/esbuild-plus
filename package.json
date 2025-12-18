@@ -1,6 +1,6 @@
 {
   "name": "esbuild-plus",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Minimal esbuild development envionment",
   "keywords": [
     "esbuild",
