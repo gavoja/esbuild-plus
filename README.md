@@ -26,6 +26,8 @@ Bundle for production:
 npx ebp
 ```
 
+To bundle as IIFE instead of a module add `--ifee` parameter.
+
 ## Misc
 
 ### Working directory structure

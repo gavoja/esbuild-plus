@@ -56,7 +56,7 @@ export const CLIENT_SCRIPT = `
     console.error('[ebp] Connection error, attempting to reconnect...')
     error = true
   }
-})()
+})();
 `
 
 const clients = new Set()

@@ -6,7 +6,8 @@ import path from 'node:path'
 import { CLIENT_SCRIPT, reloadClients, serve } from './server.js'
 import watch from './watch.js'
 
-const IS_DEV = process.argv.includes('--dev') || process.argv.includes('-d')
+const IS_DEV = process.argv.includes('--dev')
+const FORMAT = process.argv.includes('--iife') ? 'iife' : 'esm'
 
 function serverReloadPlugin () {
   return {
@@ -51,7 +52,7 @@ async function main () {
     entryPoints: entryPoints.map(f => `./src/${f}`),
     outdir: './target',
     plugins: [svgImportPlugin(), serverReloadPlugin()],
-    format: 'esm',
+    format: FORMAT,
     bundle: true,
     minify: false,
     sourcemap: IS_DEV ? 'inline' : false,
