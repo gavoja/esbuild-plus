@@ -54,7 +54,7 @@ async function main () {
     plugins: [svgImportPlugin(), serverReloadPlugin()],
     format: FORMAT,
     bundle: true,
-    minify: false,
+    minify: !IS_DEV,
     sourcemap: IS_DEV ? 'inline' : false,
     banner: IS_DEV ? { js: CLIENT_SCRIPT } : undefined,
     define: { IS_DEV: JSON.stringify(IS_DEV) }
