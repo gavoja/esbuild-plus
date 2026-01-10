@@ -4,7 +4,8 @@ import { context as esbuildContext } from 'esbuild'
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import { CLIENT_SCRIPT, reloadClients, serve } from './server.js'
-import watch from './watch.js'
+// import watch from './watch.js'
+import { watch, existsSync } from 'node:fs'
 
 const IS_DEV = process.argv.includes('--dev')
 const FORMAT = process.argv.includes('--iife') ? 'iife' : 'esm'
@@ -74,9 +75,17 @@ async function main () {
   }
 
   // Handle static file changes.
-  watch('./static', () => {
-    fs.cp('./static', './target', { recursive: true })
-    console.log('[ebp] Static files copied.')
+  watch('./static', { recursive: true }, (eventType, filename) => {
+    const source = `./static/${filename}`
+    const target = `./target/${filename}`
+
+    if (!existsSync(source) && existsSync(target)) {
+      fs.rm(target, { recursive: true })
+    } else {
+      fs.cp('./static', './target', { recursive: true })
+    }
+
+    console.log('[ebp] Static files synced.')
     reloadClients()
   })
 
