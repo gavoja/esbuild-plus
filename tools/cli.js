@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 /* global Iterator */
 import { context as esbuildContext } from 'esbuild'
-import fs from 'node:fs/promises'
+import fs from 'node:fs'
 import path from 'node:path'
+import watch from './watch.js'
 import { CLIENT_SCRIPT, reloadClients, serve } from './server.js'
-import { watch, existsSync } from 'node:fs'
 
 const IS_DEV = process.argv.includes('--dev')
 const FORMAT = process.argv.includes('--iife') ? 'iife' : 'esm'
@@ -29,8 +29,8 @@ function svgImportPlugin () {
         path: path.join(args.resolveDir, args.path),
         namespace: 'svg'
       }))
-      build.onLoad({ filter: /.*/, namespace: 'svg' }, async args => {
-        const buf = await fs.readFile(args.path)
+      build.onLoad({ filter: /.*/, namespace: 'svg' }, args => {
+        const buf = fs.readFileSync(args.path)
         return {
           contents: buf.toString('utf8'),
           loader: 'text'
@@ -40,9 +40,15 @@ function svgImportPlugin () {
   }
 }
 
+function copyStatic () {
+  fs.rmSync('./target', { recursive: true, force: true })
+  fs.cpSync('./static', './target', { recursive: true, force: true })
+  console.log('[ebp] Static files copied.')
+}
+
 async function main () {
   // Resolve entry points.
-  const entryPoints = Iterator.from(await fs.readdir('./src'))
+  const entryPoints = Iterator.from(fs.readdirSync('./src'))
     .filter(f => f.endsWith('.js') || f.endsWith('.ts') || f.endsWith('.jsx') || f.endsWith('.tsx'))
     .toArray()
   console.log('[ebp] Entry point(s):', entryPoints.join(', '))
@@ -61,10 +67,7 @@ async function main () {
   })
 
   // Clean up.
-  await fs.rm('./target', { recursive: true, force: true })
-  fs.cp('./static', './target', { recursive: true, force: true }).then(() =>
-    console.log('[ebp] Static files copied.')
-  )
+  copyStatic()
 
   // Production.
   if (!IS_DEV) {
@@ -74,17 +77,8 @@ async function main () {
   }
 
   // Handle static file changes.
-  watch('./static', { recursive: true }, (eventType, filename) => {
-    const source = `./static/${filename}`
-    const target = `./target/${filename}`
-
-    if (!existsSync(source) && existsSync(target)) {
-      fs.rm(target, { recursive: true })
-    } else {
-      fs.cp('./static', './target', { recursive: true })
-    }
-
-    console.log('[ebp] Static files synced.')
+  watch('./static', () => {
+    copyStatic()
     reloadClients()
   })
 
