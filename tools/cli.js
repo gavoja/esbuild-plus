@@ -4,7 +4,6 @@ import { context as esbuildContext } from 'esbuild'
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import { CLIENT_SCRIPT, reloadClients, serve } from './server.js'
-// import watch from './watch.js'
 import { watch, existsSync } from 'node:fs'
 
 const IS_DEV = process.argv.includes('--dev')

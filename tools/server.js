@@ -1,4 +1,3 @@
-import 'dotenv/config'
 import { createReadStream } from 'node:fs'
 import fs from 'node:fs/promises'
 import http from 'node:http'
